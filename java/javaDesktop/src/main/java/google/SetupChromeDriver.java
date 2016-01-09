@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package google;
 
@@ -18,7 +18,7 @@ public class SetupChromeDriver {
 	// The Chrome Driver locations under the resource folder
 	private static String MAC_DRIVER = "/drivers/chromedriver";
 	private static String WINDOWS_DRIVER = "/drivers/chromedriver.exe";
-	
+
 	public WebDriver setupChromeDriver() {
 		// OS type
 		if (System.getProperty("os.name").contains("Mac")) {		
@@ -32,16 +32,12 @@ public class SetupChromeDriver {
 
 			// Now checking for existence of Chrome executable.'
 			if (!new File("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome").exists()) {
-				throw new RuntimeException("Cannot find Chrome at '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'");
+				throw new RuntimeException("Cannot find chromedriver file. Please download and copy to drivers folder in current project");
 			}
 		} else {
+			// Make sure Chrome is installed on the default location on your machine.
+			System.out.println(SetupChromeDriver.class.getResource(WINDOWS_DRIVER).getFile());
 			System.setProperty("webdriver.chrome.driver", SetupChromeDriver.class.getResource(WINDOWS_DRIVER).getFile());
-
-			// Now checking for existence of Chrome executable.'
-			if (!new File(System.getProperty("user.home") + "/AppData/Local/Google/Chrome/Application/chrome.exe")
-					.exists()) {
-				throw new RuntimeException("Cannot find Chrome at '" + System.getProperty("user.home") + "/AppData/Local/Google/Chrome/Application/chrome.exe'");
-			}
 		}
 
 		ChromeOptions options = new ChromeOptions();
