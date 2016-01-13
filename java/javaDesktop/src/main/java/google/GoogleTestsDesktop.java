@@ -1,7 +1,11 @@
 package google;
 
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -9,7 +13,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 public class GoogleTestsDesktop {
-	static ChromeDriver driver = null;
+	private RemoteWebDriver driver = new FirefoxDriver();
 	
 	final static String GOOGLE_URL = "https://mail.google.com";
 	final static String GOOGLE_URL_HOMEPAGE = "https://mail.google.com/mail/u/0/#inbox";
@@ -29,16 +33,24 @@ public class GoogleTestsDesktop {
 	String getSentEmail;
 	String getToEmail;
 	
-	@Parameters({"emailSend", "passwordEmailSend", "emailTo", "passwordEmailTo" })
+	@Parameters({"browserName","emailSend", "passwordEmailSend", "emailTo", "passwordEmailTo" })
 	@BeforeTest
-	public void Setup(String emailSend, String passwordEmailSend,String emailTo,String passwordEmailTo) {
+	public void Setup(String browserName, String emailSend, String passwordEmailSend,String emailTo,String passwordEmailTo) {
 
 		EMAIL_ADDRESS1 = emailSend;
 		EMAIL_ADDRESS2 = emailTo;
 		PASSWORDEMAILSEND = passwordEmailSend;
 		PASSWORDEMAILTO = passwordEmailTo;
-		SetupChromeDriver setup= new SetupChromeDriver();
-		driver= (ChromeDriver)setup.setupChromeDriver();
+		SetupDriver setup= new SetupDriver();
+		
+		if(browserName.toLowerCase().equals("chrome")){
+			driver=(ChromeDriver) setup.setupChromeDriver();
+		}else if(browserName.toLowerCase().equals("ie") || browserName.toLowerCase().equals("internetexplorer")){
+			driver=(InternetExplorerDriver) setup.setupIEDriver();
+		}else{
+			driver=(FirefoxDriver) setup.setupFirefoxDriver();
+		}
+		
 		driver.manage().deleteAllCookies();
 		driver.navigate().refresh();
 	}
