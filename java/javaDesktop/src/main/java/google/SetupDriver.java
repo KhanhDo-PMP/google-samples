@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package google;
 
@@ -8,7 +8,9 @@ import java.io.File;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 /**
@@ -21,10 +23,10 @@ public class SetupDriver {
 	private static String MAC_CHROME_DRIVER = "/drivers/chromedriver";
 	private static String WINDOWS_CHROME_DRIVER = "/drivers/chromedriver.exe";
 	private static String WINDOWS_IE_DRIVER = "/drivers/IEDriverServer.exe";
-	
+
 	public WebDriver setupChromeDriver() {
 		// OS type
-		if (System.getProperty("os.name").contains("Mac")) {		
+		if (System.getProperty("os.name").contains("Mac")) {
 			File cDriver = new File(SetupDriver.class.getResource(MAC_CHROME_DRIVER).getFile());
 
 			// Is it executable
@@ -49,16 +51,23 @@ public class SetupDriver {
 		driver = new ChromeDriver(options);
 		return driver;
 	}
-	
+
 	public WebDriver setupFirefoxDriver() {
-		 WebDriver driver = new FirefoxDriver();
+		// Just in case you install Firefox in the different location
+		/*
+		File pathToBinary = new File("D:\\Mozilla Firefox\\Firefox.exe");
+		FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
+		FirefoxProfile firefoxProfile = new FirefoxProfile();
+		driver = new FirefoxDriver(ffBinary,firefoxProfile);
+		*/
+		driver = new FirefoxDriver();
 		return driver;
 	}
-	
+
 	public WebDriver setupIEDriver() {
 		System.out.println(SetupDriver.class.getResource(WINDOWS_IE_DRIVER).getFile());
 		System.setProperty("webdriver.ie.driver", SetupDriver.class.getResource(WINDOWS_IE_DRIVER).getFile());
-		 WebDriver driver = new InternetExplorerDriver();
+		driver = new InternetExplorerDriver();
 		return driver;
 	}
 }
