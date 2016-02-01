@@ -20,35 +20,36 @@ public class GoogleTestsDesktop {
 	final static String TRASH_URL = "https://mail.google.com/mail/u/0/#trash";
 	final static String SENT_URL = "https://mail.google.com/mail/u/0/#sent";
 
-	static String EMAIL_ADDRESS1 = "krypton.portal@gmail.com";
-	static String EMAIL_ADDRESS2 = "krypton.portal2@gmail.com";
-	static String PASSWORDEMAILSEND = "Admin@123456789";
-	static String PASSWORDEMAILTO = "Admin@123456789";
+	static String EMAIL_ADDRESS1 = "dinhducthanh91@gmail.com";
+	static String EMAIL_ADDRESS2 = "jslucifer.photography@gmail.com";
+	static String PASSWORDEMAILSEND = "ngoctrinh";
+	static String PASSWORDEMAILTO = "DucThanh1991";
 	final static String SUBJECT1 = "It is a subject";
 	final static String BODY1 = "It is a body";
-	final static String MSG_NOEMAIL = "No conversations in the Trash. Who needs to delete when you have so much storage?!";
+	final static String MSG_NOEMAIL = "The conversation has been deleted.";
 	final static String MSG_NOEMAIL_PRIMARY = "You have no mail.\nPlease enjoy your day!";
 	String getSubject;
 	String getBody;
 	String getSentEmail;
 	String getToEmail;
 
-	@Parameters({"browserName","emailSend", "passwordEmailSend", "emailTo", "passwordEmailTo" })
+	@Parameters({ "browserName", "emailSend", "passwordEmailSend", "emailTo", "passwordEmailTo" })
 	@BeforeTest
-	public void Setup(String browserName, String emailSend, String passwordEmailSend,String emailTo,String passwordEmailTo) {
+	public void Setup(String browserName, String emailSend, String passwordEmailSend, String emailTo,
+			String passwordEmailTo) {
 
 		EMAIL_ADDRESS1 = emailSend;
 		EMAIL_ADDRESS2 = emailTo;
 		PASSWORDEMAILSEND = passwordEmailSend;
 		PASSWORDEMAILTO = passwordEmailTo;
-		SetupDriver setup= new SetupDriver();
+		SetupDriver setup = new SetupDriver();
 
-		if(browserName.toLowerCase().equals("chrome")){
-			driver=(ChromeDriver) setup.setupChromeDriver();
-		}else if(browserName.toLowerCase().equals("ie") || browserName.toLowerCase().equals("internetexplorer")){
-			driver=(InternetExplorerDriver) setup.setupIEDriver();
-		}else{
-			driver=(FirefoxDriver) setup.setupFirefoxDriver();
+		if (browserName.toLowerCase().equals("chrome")) {
+			driver = (ChromeDriver) setup.setupChromeDriver();
+		} else if (browserName.toLowerCase().equals("ie") || browserName.toLowerCase().equals("internetexplorer")) {
+			driver = (InternetExplorerDriver) setup.setupIEDriver();
+		} else {
+			driver = (FirefoxDriver) setup.setupFirefoxDriver();
 		}
 
 		driver.manage().deleteAllCookies();
@@ -77,8 +78,7 @@ public class GoogleTestsDesktop {
 		driver.findElementById("next").click();
 		Sleep(2000);
 		String errorMsg2 = driver.findElementById("errormsg_0_Email").getText();
-		Assert.assertEquals(errorMsg2,
-				"Sorry, Google doesn't recognize that email. Create an account using that address?");
+		Assert.assertEquals(errorMsg2, "Sorry, Google doesn't recognize that email.");
 	}
 
 	@Test(priority = 2, description = "should accept valid credentials")
@@ -96,9 +96,9 @@ public class GoogleTestsDesktop {
 		Sleep(1000);
 		driver.findElementByXPath("//textarea[@aria-label='To']").sendKeys(EMAIL_ADDRESS2);
 		driver.findElementByXPath("//input[@name='subjectbox']").sendKeys(SUBJECT1);
-		driver.findElementByXPath("//div[@id=':8y']").sendKeys(BODY1);
+		driver.findElementByXPath("//div[@aria-label='Message Body']").sendKeys(BODY1);
 		Sleep(1000);
-		driver.findElementByXPath("//div[@id=':7m' and text()='Send']").click();
+		driver.findElementByXPath("//div[text()='Send']").click();
 		Sleep(1000);
 		driver.get(SENT_URL);
 		Sleep(5000);
@@ -123,7 +123,7 @@ public class GoogleTestsDesktop {
 		Delete_Sent_Msg();
 		Delete_Trash_Msg();
 
-		//Sign out
+		// Sign out
 		driver.findElementByXPath("//span[@class='gb_Za gbii']").click();
 		Sleep(1000);
 		driver.findElementByXPath("//a[@id='gb_71' and text()='Sign out']").click();
@@ -145,10 +145,12 @@ public class GoogleTestsDesktop {
 
 		driver.findElementByXPath("//div[@class='xT'][1]").click();
 		Sleep(2000);
-		getSubject = driver.findElementByXPath("//h2[@id=':5q']").getText();
-		getBody = driver.findElementByXPath("//div[@id=':6g']").getText();
-		getSentEmail = driver.findElementByXPath("//h3[@class='iw']/span").getAttribute("email");
-		getToEmail = driver.findElementByXPath("//h3[@class='iw ajw']/span").getAttribute("email");
+		getSubject = driver.findElementByXPath("//div[@class='ha']/h2").getText();
+		getBody = driver.findElementByXPath("//div[@class='gs']/div[7]/div/div[1]").getText();
+		getSentEmail = driver.findElementByXPath("//h3[@class='iw']/span[1]").getAttribute("email");
+		driver.findElementByXPath("//div[@class='ajy']").click();
+		Sleep(2000);
+		getToEmail = driver.findElementByXPath("//table[@class='ajC']/tbody/tr[2]/td[2]/span/span").getAttribute("email");
 
 		Assert.assertEquals(SUBJECT1, getSubject);
 		Assert.assertEquals(BODY1, getBody);
@@ -157,7 +159,7 @@ public class GoogleTestsDesktop {
 
 		// delete email on Primary Email and Trash folder on Gmail2
 		Delete_Inbox_Msg();
-		Delete_Trash_Msg();
+		Delete_Trash1_Msg();
 	}
 
 	private void Login(String username, String password) {
@@ -171,12 +173,14 @@ public class GoogleTestsDesktop {
 		Sleep(10000);
 	}
 
-	private void Delete_Sent_Msg(){
+	private void Delete_Sent_Msg() {
 		driver.get(SENT_URL);
 		Sleep(3000);
 		driver.findElementByXPath("//div[contains(@class,'oZ-jc T-Jo J-J5-Ji') and @role='checkbox'][1]").click();
-		Sleep(3000);
-		driver.findElementByXPath("//div[@class='Cq aqL']//div[@aria-label='Delete']").click();
+		Sleep(4000);
+		driver.findElementByXPath(
+				".//*[@id=':5']/div[2]/div[1]/div[1]/div/div/div[2]/div[3]")
+				.click();
 		Sleep(3000);
 		driver.findElementByXPath("//button[@name='ok' and text()='OK']").click();
 		Sleep(2000);
@@ -185,33 +189,48 @@ public class GoogleTestsDesktop {
 		Assert.assertEquals(true, getNoEmailMsg.contains("No sent messages!"));
 	}
 
-	private void executeScript(String script){
+	private void executeScript(String script) {
 		if (driver instanceof JavascriptExecutor) {
 			((JavascriptExecutor) driver).executeScript(script);
 		}
 	}
-	private void Delete_Trash_Msg(){
+
+	private void Delete_Trash_Msg() {
 		driver.get(TRASH_URL);
 		Sleep(5000);
-		driver.findElementByXPath("//div[@id=':78'][1]").click();
-		Sleep(1000);
-		driver.findElementByXPath("//div[contains(@class,'T-I-Zf-aw2') and text()='Delete forever']").click();
-		String getNoEmailMsg = driver.findElementByXPath("//div[@class='ae4 UI']").getText();
+		driver.findElementByXPath("//div[contains(@class,'oZ-jc T-Jo J-J5-Ji') and @role='checkbox'][1]").click();
+		Sleep(2000);
+		driver.findElementByXPath(".//*[@id=':5']/div[3]/div[1]/div[1]/div/div/div[2]/div").click();
+		Sleep(2000);
+		String getNoEmailMsg = driver.findElementByXPath("html/body/div[7]/div[3]/div/div[1]/div[5]/div[1]/div[2]/div[3]/div/div/div[2]/span").getText();
+
+		Assert.assertEquals(MSG_NOEMAIL, getNoEmailMsg);
+	}
+	
+	private void Delete_Trash1_Msg() {
+		driver.get(TRASH_URL);
+		Sleep(5000);
+		driver.findElementByXPath("//div[contains(@class,'oZ-jc T-Jo J-J5-Ji') and @role='checkbox'][1]").click();
+		Sleep(2000);
+		driver.findElementByXPath(".//*[@id=':5']/div[2]/div[1]/div[1]/div/div/div[2]/div").click();
+		Sleep(2000);
+		String getNoEmailMsg = driver.findElementByXPath("html/body/div[7]/div[3]/div/div[1]/div[5]/div[1]/div[2]/div[3]/div/div/div[2]/span").getText();
 
 		Assert.assertEquals(MSG_NOEMAIL, getNoEmailMsg);
 	}
 
-	private void Delete_Inbox_Msg(){
+	private void Delete_Inbox_Msg() {
 		driver.get(GOOGLE_URL_HOMEPAGE);
 		Sleep(5000);
 		driver.findElementByXPath("//div[@id=':3j'][1]").click();
 		Sleep(1000);
-		driver.findElementByXPath("//div[@aria-label='Delete' and contains(@class,'T-I-Zf-aw2')]").click();
+		driver.findElementByXPath(".//*[@id=':5']/div/div[1]/div[1]/div/div/div[2]/div[3]").click();
 
-		String getNoEmailMsg = driver.findElementByXPath("//div[@class='ae4 aDM']").getText();
+		String getNoEmailMsg = driver.findElementByXPath("//div[@class='aRv']").getText();
 
 		Assert.assertEquals(true, getNoEmailMsg.contains("Your Primary tab is empty."));
 	}
+
 	private void Sleep(int millis) {
 		try {
 			Thread.sleep(millis);
